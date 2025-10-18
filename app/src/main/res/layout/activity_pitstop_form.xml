@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:fillViewport="true"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- Piloto -->
+        <TextView
+            android:text="Piloto"
+            android:textStyle="bold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <Spinner
+            android:id="@+id/spPiloto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <!-- Escudería -->
+        <TextView
+            android:text="Escudería"
+            android:textStyle="bold"
+            android:layout_marginTop="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <Spinner
+            android:id="@+id/spEscuderia"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <!-- Tiempo total (s) -->
+        <TextView
+            android:text="Tiempo total (s)"
+            android:textStyle="bold"
+            android:layout_marginTop="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <EditText
+            android:id="@+id/etTiempo"
+            android:inputType="numberDecimal"
+            android:hint="e.g. 2.35"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <!-- Compuesto -->
+        <TextView
+            android:text="Cambio de neumáticos"
+            android:textStyle="bold"
+            android:layout_marginTop="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <Spinner
+            android:id="@+id/spCompuesto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <!-- Número de neumáticos -->
+        <TextView
+            android:text="Número de neumáticos cambiados"
+            android:textStyle="bold"
+            android:layout_marginTop="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <EditText
+            android:id="@+id/etNeumaticos"
+            android:inputType="number"
+            android:hint="0 a 4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <!-- Estado -->
+        <TextView
+            android:text="Estado"
+            android:textStyle="bold"
+            android:layout_marginTop="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <Spinner
+            android:id="@+id/spEstado"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <!-- Motivo del fallo (solo si Fallido) -->
+        <TextView
+            android:id="@+id/tvMotivo"
+            android:text="Motivo del fallo"
+            android:textStyle="bold"
+            android:layout_marginTop="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <EditText
+            android:id="@+id/etMotivo"
+            android:hint="Describe el fallo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <!-- Mecánico principal -->
+        <TextView
+            android:text="Mecánico principal"
+            android:textStyle="bold"
+            android:layout_marginTop="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <EditText
+            android:id="@+id/etMecanico"
+            android:hint="John Doe"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <!-- Fecha y hora -->
+        <TextView
+            android:text="Fecha y hora del pit stop"
+            android:textStyle="bold"
+            android:layout_marginTop="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <EditText
+            android:id="@+id/etFechaHora"
+            android:focusable="false"
+            android:hint="Selecciona fecha y hora"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <!-- Botones -->
+        <LinearLayout
+            android:orientation="horizontal"
+            android:gravity="end"
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/btnCancelar"
+                android:text="Cancelar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <Button
+                android:id="@+id/btnGuardar"
+                android:text="Guardar"
+                android:layout_marginStart="12dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>
