@@ -53,6 +53,7 @@ android {
 
 dependencies {
     implementation(libs.androidx.core.ktx)
+
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
@@ -68,6 +69,8 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+    implementation("androidx.appcompat:appcompat:1.7.0")
+
 
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
 }

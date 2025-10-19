@@ -20,7 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.javierf.pitstopsparcial.model.PitStop
 import com.javierf.pitstopsparcial.ui.PitStopFormActivity
-import com.javierf.pitstopsparcial.ui.theme.PitStopsParcialTheme   // ✅ usa tu tema Compose
+import com.javierf.pitstopsparcial.theme.PitStopsParcialTheme
 
 class MainActivity : ComponentActivity() {
 
@@ -43,13 +43,11 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    // launcher para recibir el resultado del formulario
     private val launcher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == RESULT_OK) {
-            val pit =
-                result.data?.getParcelableExtra<PitStop>(PitStopFormActivity.EXTRA_PITSTOP)
+            val pit = result.data?.getParcelableExtra<PitStop>(PitStopFormActivity.EXTRA_PITSTOP)
             if (pit != null) {
                 Toast.makeText(
                     this,

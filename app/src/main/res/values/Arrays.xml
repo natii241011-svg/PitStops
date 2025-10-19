@@ -1,3 +1,30 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string-array name="pilotos_array">
+        <item>Lewis Hamilton</item>
+        <item>Max Verstappen</item>
+        <item>Charles Leclerc</item>
+        <item>Lando Norris</item>
+        <item>Fernando Alonso</item>
+    </string-array>
+
+    <string-array name="escuderias_array">
+        <item>Mercedes</item>
+        <item>Red Bull</item>
+        <item>Ferrari</item>
+        <item>McLaren</item>
+        <item>Aston Martin</item>
+    </string-array>
+
+    <string-array name="compuestos_array">
+        <item>Soft</item>
+        <item>Medium</item>
+        <item>Hard</item>
+        <item>Intermediate</item>
+        <item>Wet</item>
+    </string-array>
+
+    <string-array name="estados_array">
+        <item>OK</item>
+        <item>Fallido</item>
+    </string-array>
 </resources>
