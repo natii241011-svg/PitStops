@@ -25,6 +25,18 @@
         <activity
             android:name=".ui.PitStopFormActivity"
             android:exported="false" />
+
+        <activity
+            android:name=".ui.PitStopFormComposeActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.PitStopListActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.PilotStatsActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

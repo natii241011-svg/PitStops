@@ -70,7 +70,9 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     implementation("androidx.appcompat:appcompat:1.7.0")
-
+    
+    // 📊 MPAndroidChart para gráficos profesionales
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
 
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
 }

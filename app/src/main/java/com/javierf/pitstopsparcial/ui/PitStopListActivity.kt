@@ -1,8 +1,10 @@
 package com.javierf.pitstopsparcial.ui
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -22,10 +24,25 @@ import androidx.compose.ui.unit.sp
 import com.javierf.pitstopsparcial.model.PitStop
 import com.javierf.pitstopsparcial.theme.PitStopsParcialTheme
 class PitStopListActivity : ComponentActivity() {
+    private lateinit var pitStopsList: MutableList<PitStop>
+    
+    private val resultLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == RESULT_OK) {
+            // Actualizar la lista con los datos devueltos
+            val updatedPitStops = result.data?.getParcelableArrayListExtra<PitStop>("updated_pitstops")
+            if (updatedPitStops != null) {
+                pitStopsList.clear()
+                pitStopsList.addAll(updatedPitStops)
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val pitStops = intent.getParcelableArrayListExtra<PitStop>("pitstops") ?: arrayListOf()
+        pitStopsList = intent.getParcelableArrayListExtra<PitStop>("pitstops")?.toMutableList() ?: mutableListOf()
 
         setContent {
             PitStopsParcialTheme {
@@ -33,7 +50,15 @@ class PitStopListActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    PitStopListScreen(pitStops = pitStops, onVolver = { finish() })
+                    PitStopListScreen(
+                        pitStops = pitStopsList, 
+                        onVolver = { 
+                            val resultIntent = Intent()
+                            resultIntent.putParcelableArrayListExtra("updated_pitstops", ArrayList(pitStopsList))
+                            setResult(RESULT_OK, resultIntent)
+                            finish() 
+                        }
+                    )
                 }
             }
         }
@@ -48,6 +73,11 @@ fun PitStopListScreen(
     var searchQuery by remember { mutableStateOf(TextFieldValue("")) }
     var lista by remember { mutableStateOf(pitStops.toList()) }
 
+    // Actualizar la lista local cuando cambie la lista original
+    LaunchedEffect(pitStops) {
+        lista = pitStops.toList()
+    }
+
     val filteredList = lista.filter {
         it.piloto.contains(searchQuery.text, ignoreCase = true)
     }
@@ -55,136 +85,222 @@ fun PitStopListScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(Color(0xFFF8F9FA))
             .padding(16.dp)
     ) {
-        Text(
-            text = "Listado Pit Stops",
-            fontSize = 26.sp,
-            fontWeight = FontWeight.ExtraBold,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
-        OutlinedTextField(
-            value = searchQuery,
-            onValueChange = { searchQuery = it },
-            label = { Text("\uD83D\uDD0D Buscar") },
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .background(Color(0xFFF2F2F2))
-                .padding(vertical = 8.dp)
+        // Header moderno
+        Card(
+            modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(containerColor = Color(0xFF2C3E50)),
+            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
         ) {
-            Text(
-                "#",
-                modifier = Modifier.weight(0.1f).fillMaxWidth(),
-                fontWeight = FontWeight.SemiBold,
-                textAlign = TextAlign.Center
-            )
-            Text(
-                "Piloto",
-                modifier = Modifier.weight(0.4f).fillMaxWidth(),
-                fontWeight = FontWeight.SemiBold,
-                textAlign = TextAlign.Center
-            )
-            Text(
-                "Sg",
-                modifier = Modifier.weight(0.25f).fillMaxWidth(),
-                fontWeight = FontWeight.SemiBold,
-                textAlign = TextAlign.Center
-            )
-            Text(
-                "Estado",
-                modifier = Modifier.weight(0.15f).fillMaxWidth(),
-                fontWeight = FontWeight.SemiBold,
-                textAlign = TextAlign.Center
-            )
-            Spacer(modifier = Modifier.width(48.dp))
+            Row(
+                modifier = Modifier.padding(20.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "🏁",
+                    fontSize = 24.sp,
+                    modifier = Modifier.padding(end = 12.dp)
+                )
+                Text(
+                    text = "Listado de Pit Stops",
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
+            }
         }
+        
+        // Campo de búsqueda mejorado
+        Card(
+            modifier = Modifier.fillMaxWidth().padding(bottom = 12.dp),
+            shape = RoundedCornerShape(12.dp),
+            colors = CardDefaults.cardColors(containerColor = Color.White),
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        ) {
+            OutlinedTextField(
+                value = searchQuery,
+                onValueChange = { searchQuery = it },
+                label = { Text("🔍 Buscar por piloto") },
+                modifier = Modifier.fillMaxWidth().padding(8.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = Color(0xFF3498DB),
+                    unfocusedBorderColor = Color(0xFFBDC3C7)
+                )
+            )
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        // Encabezado mejorado - ya no necesario con el nuevo diseño de tarjetas
 
         Spacer(modifier = Modifier.height(8.dp))
         LazyColumn(modifier = Modifier.weight(1f)) {
             itemsIndexed(filteredList) { index, pitStop ->
                 PitStopRow(index + 1, pitStop) {
-                    lista = lista.toMutableList().apply { remove(pitStop) }
+                    // Eliminar de la lista original usando el ID
+                    pitStops.removeAll { it.id == pitStop.id }
+                    // Actualizar la lista local usando el ID
+                    lista = lista.toMutableList().apply { removeAll { it.id == pitStop.id } }
                 }
             }
         }
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(12.dp))
         Button(
             onClick = onVolver,
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF800020)),
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF34495E)),
             modifier = Modifier
                 .fillMaxWidth()
-                .height(56.dp),
-            shape = RoundedCornerShape(16.dp)
+                .height(52.dp),
+            shape = RoundedCornerShape(16.dp),
+            elevation = ButtonDefaults.buttonElevation(defaultElevation = 6.dp)
         ) {
-            Text(
-                "Volver",
-                color = Color.White,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text(
+                    text = "←",
+                    fontSize = 18.sp,
+                    color = Color.White
+                )
+                Text(
+                    "Volver a Resumen",
+                    color = Color.White,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
         }
     }
 }
 
 @Composable
 fun PitStopRow(index: Int, pitStop: PitStop, onDelete: () -> Unit) {
-    Row(
+    Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 6.dp),
-        verticalAlignment = Alignment.CenterVertically
+            .padding(vertical = 4.dp),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
     ) {
-        Text(
-            index.toString(),
-            modifier = Modifier.weight(0.1f).fillMaxWidth(),
-            textAlign = TextAlign.Center
-        )
-
-        Text(
-            pitStop.piloto,
-            modifier = Modifier.weight(0.4f).fillMaxWidth(),
-            textAlign = TextAlign.Center
-        )
-
-        Text(
-            pitStop.tiempoSegundos.toString(),
-            modifier = Modifier.weight(0.25f).fillMaxWidth(),
-            textAlign = TextAlign.Center
-        )
-
-        val colorEstado = if (pitStop.estado.equals("OK", true)) Color(0xFF4CAF50) else Color(0xFFF44336)
-        val fontSizeEstado = if (pitStop.estado.equals("Fallido", true)) 12.sp else 14.sp
-        Box(
+        Row(
             modifier = Modifier
-                .weight(0.15f)
                 .fillMaxWidth()
-                .background(colorEstado, RoundedCornerShape(8.dp))
-                .padding(horizontal = 8.dp, vertical = 4.dp),
-            contentAlignment = Alignment.Center
+                .padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                pitStop.estado,
-                color = Color.White,
-                fontSize = fontSizeEstado,
-                textAlign = TextAlign.Center,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-        }
+            // Número de índice mejorado con gradiente
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .background(
+                        brush = androidx.compose.ui.graphics.Brush.linearGradient(
+                            colors = listOf(
+                                Color(0xFFDC143C),
+                                Color(0xFFB71C1C)
+                            )
+                        ),
+                        shape = RoundedCornerShape(20.dp)
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "#$index",
+                    color = Color.White,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.ExtraBold
+                )
+            }
 
-        Spacer(modifier = Modifier.width(8.dp))
-        Button(
-            onClick = onDelete,
-            colors = ButtonDefaults.buttonColors(containerColor = Color.White),
-            modifier = Modifier.size(32.dp),
-            contentPadding = PaddingValues(0.dp),
-            shape = RoundedCornerShape(8.dp)
-        ) {
-            Text("🗑️", color = Color(0xFFF44336), fontSize = 12.sp)
+            Spacer(modifier = Modifier.width(12.dp))
+
+            // Información del piloto mejorada
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(
+                    text = pitStop.piloto,
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF2C3E50),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Text(
+                    text = pitStop.escuderia,
+                    fontSize = 11.sp,
+                    color = Color(0xFF7F8C8D),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            // Tiempo con diseño mejorado
+            Box(
+                modifier = Modifier
+                    .background(
+                        color = Color(0xFFF8F9FA),
+                        shape = RoundedCornerShape(8.dp)
+                    )
+                    .padding(horizontal = 8.dp, vertical = 4.dp)
+            ) {
+                Text(
+                    text = "${pitStop.tiempoSegundos}s",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFFDC143C)
+                )
+            }
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            // Estado con diseño mejorado
+            val colorEstado = if (pitStop.estado.equals("OK", true)) Color(0xFF27AE60) else Color(0xFFE74C3C)
+            val iconEstado = if (pitStop.estado.equals("OK", true)) "✅" else "❌"
+
+            Box(
+                modifier = Modifier
+                    .background(
+                        color = if (pitStop.estado.equals("OK", true)) Color(0xFFE8F5E8) else Color(0xFFFFEBEE),
+                        shape = RoundedCornerShape(8.dp)
+                    )
+                    .padding(horizontal = 6.dp, vertical = 4.dp)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Text(
+                        text = iconEstado,
+                        fontSize = 12.sp
+                    )
+                    Text(
+                        text = pitStop.estado,
+                        fontSize = 10.sp,
+                        color = colorEstado,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            // Botón de eliminar con diseño moderno
+            androidx.compose.material3.IconButton(
+                onClick = onDelete,
+                modifier = Modifier
+                    .size(36.dp)
+                    .background(
+                        color = Color(0xFFE74C3C),
+                        shape = RoundedCornerShape(18.dp)
+                    )
+            ) {
+                Text("🗑️", fontSize = 14.sp)
+            }
         }
     }
 }
