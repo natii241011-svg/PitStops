@@ -6,23 +6,18 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.javierf.pitstopsparcial.model.PitStop
 import com.javierf.pitstopsparcial.ui.PitStopFormActivity
+import com.javierf.pitstopsparcial.ui.PitStopListActivity
 import com.javierf.pitstopsparcial.theme.PitStopsParcialTheme
-
 class MainActivity : ComponentActivity() {
+    private val pitStops = mutableListOf<PitStop>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,19 +31,27 @@ class MainActivity : ComponentActivity() {
                         onRegistrarClick = {
                             val intent = Intent(this, PitStopFormActivity::class.java)
                             launcher.launch(intent)
+                        },
+                        onVerListadoClick = {
+                            val intent = Intent(this, PitStopListActivity::class.java)
+                            intent.putParcelableArrayListExtra(
+                                "pitstops",
+                                ArrayList(pitStops)
+                            )
+                            startActivity(intent)
                         }
                     )
                 }
             }
         }
     }
-
     private val launcher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == RESULT_OK) {
             val pit = result.data?.getParcelableExtra<PitStop>(PitStopFormActivity.EXTRA_PITSTOP)
             if (pit != null) {
+                pitStops.add(pit)
                 Toast.makeText(
                     this,
                     "Guardado: ${pit.piloto} • ${pit.tiempoSegundos}s • ${pit.estado}",
@@ -61,7 +64,8 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 private fun HomeScreen(
-    onRegistrarClick: () -> Unit
+    onRegistrarClick: () -> Unit,
+    onVerListadoClick: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -70,8 +74,19 @@ private fun HomeScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Button(onClick = onRegistrarClick) {
+        Button(
+            onClick = onRegistrarClick,
+            modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+        ) {
             Text("Registrar Pit Stop")
+        }
+
+        Button(
+            onClick = onVerListadoClick,
+            modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+        ) {
+            Text("Listado Pit Stops")
         }
     }
 }
+
