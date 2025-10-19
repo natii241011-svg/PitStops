@@ -1,5 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
+<!-- app/src/main/res/values/themes.xml -->
 <resources>
-
-    <style name="Theme.PitStopsParcial" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <!-- Personaliza si quieres -->
+    </style>
 </resources>

@@ -1,4 +1,4 @@
-package com.javierf.pitstopsparcial.ui.theme
+package com.javierf.pitstopsparcial.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
