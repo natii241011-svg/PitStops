@@ -2,6 +2,7 @@ package com.javierf.pitstopsparcial.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
@@ -15,6 +16,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
@@ -72,10 +74,41 @@ fun PitStopListScreen(
 ) {
     var searchQuery by remember { mutableStateOf(TextFieldValue("")) }
     var lista by remember { mutableStateOf(pitStops.toList()) }
+    val context = LocalContext.current
 
-    // Actualizar la lista local cuando cambie la lista original
-    LaunchedEffect(pitStops) {
+    // Actualizar la lista local solo cuando se inicializa la pantalla
+    LaunchedEffect(Unit) {
         lista = pitStops.toList()
+    }
+
+    // Función para eliminar un pit stop específico
+    fun deletePitStop(pitStopToDelete: PitStop) {
+        // Crear una copia de la lista original antes de modificar
+        val originalSize = pitStops.size
+        
+        // Buscar el índice específico del pit stop a eliminar
+        val indexToRemove = pitStops.indexOfFirst { it.id == pitStopToDelete.id }
+        
+        if (indexToRemove != -1) {
+            // Eliminar solo el elemento en ese índice específico
+            pitStops.removeAt(indexToRemove)
+            
+            // Actualizar la lista local con la lista modificada
+            lista = pitStops.toList()
+            
+            // Mostrar mensaje de confirmación
+            Toast.makeText(
+                context,
+                "✅ Pit stop de ${pitStopToDelete.piloto} eliminado (${originalSize} → ${pitStops.size})",
+                Toast.LENGTH_SHORT
+            ).show()
+        } else {
+            Toast.makeText(
+                context,
+                "❌ No se encontró el pit stop a eliminar",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 
     val filteredList = lista.filter {
@@ -138,10 +171,7 @@ fun PitStopListScreen(
         LazyColumn(modifier = Modifier.weight(1f)) {
             itemsIndexed(filteredList) { index, pitStop ->
                 PitStopRow(index + 1, pitStop) {
-                    // Eliminar de la lista original usando el ID
-                    pitStops.removeAll { it.id == pitStop.id }
-                    // Actualizar la lista local usando el ID
-                    lista = lista.toMutableList().apply { removeAll { it.id == pitStop.id } }
+                    deletePitStop(pitStop)
                 }
             }
         }
