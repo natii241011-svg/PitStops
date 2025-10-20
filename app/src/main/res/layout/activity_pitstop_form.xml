@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <!-- Piloto -->
+
         <TextView
             android:text="Piloto"
             android:textStyle="bold"
@@ -22,7 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
-        <!-- Escudería -->
+
         <TextView
             android:text="Escudería"
             android:textStyle="bold"
@@ -35,7 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
-        <!-- Tiempo total (s) -->
+
         <TextView
             android:text="Tiempo total (s)"
             android:textStyle="bold"
@@ -50,7 +50,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
-        <!-- Compuesto -->
+
         <TextView
             android:text="Cambio de neumáticos"
             android:textStyle="bold"
@@ -63,7 +63,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
-        <!-- Número de neumáticos -->
+
         <TextView
             android:text="Número de neumáticos cambiados"
             android:textStyle="bold"
@@ -78,7 +78,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
-        <!-- Estado -->
+
         <TextView
             android:text="Estado"
             android:textStyle="bold"
@@ -91,7 +91,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
-        <!-- Motivo del fallo (solo si Fallido) -->
+
         <TextView
             android:id="@+id/tvMotivo"
             android:text="Motivo del fallo"
@@ -106,7 +106,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
-        <!-- Mecánico principal -->
+
         <TextView
             android:text="Mecánico principal"
             android:textStyle="bold"
@@ -120,7 +120,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
-        <!-- Fecha y hora -->
+
         <TextView
             android:text="Fecha y hora del pit stop"
             android:textStyle="bold"
@@ -135,7 +135,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
-        <!-- Botones -->
+
         <LinearLayout
             android:orientation="horizontal"
             android:gravity="end"

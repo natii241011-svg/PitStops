@@ -40,12 +40,12 @@ class PitStopFormActivity : AppCompatActivity() {
     private lateinit var btnGuardar: Button
     private lateinit var btnCancelar: Button
 
-    // Fecha / hora seleccionadas
+
     private var fechaSel: LocalDate = LocalDate.now()
     private var horaSel: LocalTime = LocalTime.now()
     private val dtf: DateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")
 
-    // Para edición (en el futuro)
+
     private var editId: Long? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,7 +75,7 @@ class PitStopFormActivity : AppCompatActivity() {
         btnCancelar = findViewById(R.id.btnCancelar)
     }
 
-    // Helper para cargar arrays en Spinners
+
     private fun Spinner.fromArray(arrayRes: Int) {
         adapter = ArrayAdapter.createFromResource(
             this@PitStopFormActivity,
@@ -113,7 +113,7 @@ class PitStopFormActivity : AppCompatActivity() {
     }
 
     private fun setupFechaHoraPicker() {
-        // valor inicial
+
         etFechaHora.setText(LocalDateTime.of(fechaSel, horaSel).format(dtf))
 
         etFechaHora.setOnClickListener {
@@ -141,8 +141,7 @@ class PitStopFormActivity : AppCompatActivity() {
 
     private fun loadIfEditing() {
         editId = intent.getLongExtra(EXTRA_EDIT_ID, 0L).takeIf { it > 0L }
-        // Si luego conectamos Room/Repo, aquí precargamos los campos.
-    }
+        }
 
     private fun setupButtons() {
         btnCancelar.setOnClickListener { finish() }

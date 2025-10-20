@@ -32,7 +32,7 @@ class PitStopListActivity : ComponentActivity() {
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == RESULT_OK) {
-            // Actualizar la lista con los datos devueltos
+
             val updatedPitStops = result.data?.getParcelableArrayListExtra<PitStop>("updated_pitstops")
             if (updatedPitStops != null) {
                 pitStopsList.clear()
@@ -76,27 +76,27 @@ fun PitStopListScreen(
     var lista by remember { mutableStateOf(pitStops.toList()) }
     val context = LocalContext.current
 
-    // Actualizar la lista local solo cuando se inicializa la pantalla
+
     LaunchedEffect(Unit) {
         lista = pitStops.toList()
     }
 
-    // Función para eliminar un pit stop específico
+
     fun deletePitStop(pitStopToDelete: PitStop) {
-        // Crear una copia de la lista original antes de modificar
+
         val originalSize = pitStops.size
         
-        // Buscar el índice específico del pit stop a eliminar
+
         val indexToRemove = pitStops.indexOfFirst { it.id == pitStopToDelete.id }
         
         if (indexToRemove != -1) {
-            // Eliminar solo el elemento en ese índice específico
+
             pitStops.removeAt(indexToRemove)
             
-            // Actualizar la lista local con la lista modificada
+
             lista = pitStops.toList()
             
-            // Mostrar mensaje de confirmación
+
             Toast.makeText(
                 context,
                 "✅ Pit stop de ${pitStopToDelete.piloto} eliminado (${originalSize} → ${pitStops.size})",
@@ -121,7 +121,7 @@ fun PitStopListScreen(
             .background(Color(0xFFF8F9FA))
             .padding(16.dp)
     ) {
-        // Header moderno
+
         Card(
             modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
             shape = RoundedCornerShape(16.dp),
@@ -146,7 +146,7 @@ fun PitStopListScreen(
             }
         }
         
-        // Campo de búsqueda mejorado
+
         Card(
             modifier = Modifier.fillMaxWidth().padding(bottom = 12.dp),
             shape = RoundedCornerShape(12.dp),
@@ -165,7 +165,7 @@ fun PitStopListScreen(
             )
         }
         Spacer(modifier = Modifier.height(16.dp))
-        // Encabezado mejorado - ya no necesario con el nuevo diseño de tarjetas
+
 
         Spacer(modifier = Modifier.height(8.dp))
         LazyColumn(modifier = Modifier.weight(1f)) {
@@ -221,7 +221,7 @@ fun PitStopRow(index: Int, pitStop: PitStop, onDelete: () -> Unit) {
                 .padding(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Número de índice mejorado con gradiente
+
             Box(
                 modifier = Modifier
                     .size(40.dp)
@@ -246,7 +246,7 @@ fun PitStopRow(index: Int, pitStop: PitStop, onDelete: () -> Unit) {
 
             Spacer(modifier = Modifier.width(12.dp))
 
-            // Información del piloto mejorada
+
             Column(
                 modifier = Modifier.weight(1f)
             ) {
@@ -269,7 +269,7 @@ fun PitStopRow(index: Int, pitStop: PitStop, onDelete: () -> Unit) {
 
             Spacer(modifier = Modifier.width(8.dp))
 
-            // Tiempo con diseño mejorado
+
             Box(
                 modifier = Modifier
                     .background(
@@ -288,7 +288,7 @@ fun PitStopRow(index: Int, pitStop: PitStop, onDelete: () -> Unit) {
 
             Spacer(modifier = Modifier.width(8.dp))
 
-            // Estado con diseño mejorado
+
             val colorEstado = if (pitStop.estado.equals("OK", true)) Color(0xFF27AE60) else Color(0xFFE74C3C)
             val iconEstado = if (pitStop.estado.equals("OK", true)) "✅" else "❌"
 
@@ -319,7 +319,7 @@ fun PitStopRow(index: Int, pitStop: PitStop, onDelete: () -> Unit) {
 
             Spacer(modifier = Modifier.width(8.dp))
 
-            // Botón de eliminar con diseño moderno
+
             androidx.compose.material3.IconButton(
                 onClick = onDelete,
                 modifier = Modifier
