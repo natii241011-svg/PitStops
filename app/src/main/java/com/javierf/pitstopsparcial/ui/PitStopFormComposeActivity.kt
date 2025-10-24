@@ -31,6 +31,11 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 
+// ✅ Constante local para comunicar el resultado al MainActivity
+object Extras {
+    const val PITSTOP = "extra_pitstop"
+}
+
 class PitStopFormComposeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,9 +48,9 @@ class PitStopFormComposeActivity : ComponentActivity() {
                 ) {
                     PitStopFormScreen(
                         onGuardar = { pitStop ->
-                            // ⬅️ Mantenemos la misma clave para que el listado y el status funcionen como antes
+                            // Enviamos el objeto con la misma clave que MainActivity espera
                             val resultIntent = Intent()
-                            resultIntent.putExtra(PitStopFormActivity.EXTRA_PITSTOP, pitStop)
+                            resultIntent.putExtra(Extras.PITSTOP, pitStop)
                             setResult(RESULT_OK, resultIntent)
                             finish()
                         },
@@ -63,13 +68,13 @@ fun PitStopFormScreen(
     onGuardar: (PitStop) -> Unit,
     onCancelar: () -> Unit
 ) {
-    // 🔹 Cargamos opciones desde arrays.xml (no hardcodeado)
+    // 🔹 Cargamos opciones desde arrays.xml
     val pilotos = stringArrayResource(R.array.pilotos_array)
     val escuderias = stringArrayResource(R.array.escuderias_array)
     val compuestos = stringArrayResource(R.array.compuestos_array)
     val estados = stringArrayResource(R.array.estados_array)
 
-    // 🔹 Estados del formulario (mismo orden/diseño que tenías)
+    // 🔹 Estados del formulario
     var piloto by remember { mutableStateOf(pilotos.firstOrNull() ?: "") }
     var escuderia by remember { mutableStateOf(escuderias.firstOrNull() ?: "") }
     var tiempoSegundos by remember { mutableStateOf("") }
@@ -89,7 +94,7 @@ fun PitStopFormScreen(
             .verticalScroll(scrollState)
             .padding(4.dp)
     ) {
-        // Header centrado (igual que antes)
+        // 🏁 Título
         Text(
             text = "Registrar Pit Stop",
             fontSize = 16.sp,
@@ -101,7 +106,7 @@ fun PitStopFormScreen(
             textAlign = androidx.compose.ui.text.style.TextAlign.Center
         )
 
-        // Card del formulario
+        // 📋 Card del formulario
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -114,7 +119,7 @@ fun PitStopFormScreen(
                 modifier = Modifier.padding(8.dp),
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                // 🏎️ Piloto
+                // Piloto
                 Text(
                     text = "🏎️ Piloto",
                     fontSize = 11.sp,
@@ -152,7 +157,7 @@ fun PitStopFormScreen(
                     }
                 }
 
-                // 🏁 Escudería
+                // Escudería
                 Text(
                     text = "🏁 Escudería",
                     fontSize = 11.sp,
@@ -190,7 +195,7 @@ fun PitStopFormScreen(
                     }
                 }
 
-                // ⏱️ Tiempo en segundos
+                // Tiempo
                 Text(
                     text = "⏱️ Tiempo (segundos)",
                     fontSize = 11.sp,
@@ -205,7 +210,7 @@ fun PitStopFormScreen(
                     placeholder = { Text("Ej: 2.5") }
                 )
 
-                // 🛞 Compuesto (desde arrays.xml)
+                // Compuesto
                 Text(
                     text = "🛞 Compuesto",
                     fontSize = 11.sp,
@@ -243,7 +248,7 @@ fun PitStopFormScreen(
                     }
                 }
 
-                // 🔧 Neumáticos cambiados
+                // Neumáticos
                 Text(
                     text = "🔧 Neumáticos cambiados",
                     fontSize = 11.sp,
@@ -258,7 +263,7 @@ fun PitStopFormScreen(
                     placeholder = { Text("Ej: 4") }
                 )
 
-                // 📊 Estado
+                // Estado
                 Text(
                     text = "📊 Estado",
                     fontSize = 11.sp,
@@ -296,7 +301,7 @@ fun PitStopFormScreen(
                     }
                 }
 
-                // ⚠️ Motivo del fallo (inmediatamente debajo de Estado, como antes)
+                // Motivo del fallo (solo si es Fallido)
                 if (estado == "Fallido") {
                     Text(
                         text = "⚠️ Motivo del fallo",
@@ -312,7 +317,7 @@ fun PitStopFormScreen(
                     )
                 }
 
-                // 👨‍🔧 Mecánico principal
+                // Mecánico principal
                 Text(
                     text = "👨‍🔧 Mecánico principal",
                     fontSize = 11.sp,
@@ -326,7 +331,7 @@ fun PitStopFormScreen(
                     placeholder = { Text("Nombre del mecánico") }
                 )
 
-                // 📅 Fecha y hora (igual que antes)
+                // Fecha y hora
                 Text(
                     text = "📅 Fecha y hora",
                     fontSize = 11.sp,
@@ -337,7 +342,6 @@ fun PitStopFormScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
-                    // Fecha
                     OutlinedTextField(
                         value = fechaHora.toLocalDate().toString(),
                         onValueChange = {},
@@ -367,7 +371,6 @@ fun PitStopFormScreen(
                         label = { Text("Fecha") }
                     )
 
-                    // Hora
                     OutlinedTextField(
                         value = String.format("%02d:%02d", fechaHora.hour, fechaHora.minute),
                         onValueChange = {},
@@ -402,7 +405,7 @@ fun PitStopFormScreen(
 
         Spacer(modifier = Modifier.weight(1f))
 
-        // Botones (mismo estilo)
+        // Botones
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(4.dp)
@@ -426,20 +429,11 @@ fun PitStopFormScreen(
 
             Button(
                 onClick = {
-                    // 🔒 Validación mínima como tenías (tiempo obligatorio numérico)
                     if (tiempoSegundos.isNotBlank()) {
                         val tiempo = tiempoSegundos.toDoubleOrNull()
                         val neums = neumaticosCambiados.toIntOrNull()
-
-                        if (tiempo == null || tiempo <= 0.0) {
-                            // Puedes mejorar este mensaje si quieres
-                            // pero con esto volvemos al comportamiento anterior
-                            // sin romper tu flujo
-                            return@Button
-                        }
-                        if (neums == null || neums !in 0..4) {
-                            return@Button
-                        }
+                        if (tiempo == null || tiempo <= 0.0) return@Button
+                        if (neums == null || neums !in 0..4) return@Button
 
                         val pitStop = PitStop(
                             piloto = piloto,
@@ -452,7 +446,7 @@ fun PitStopFormScreen(
                             mecanicoPrincipal = mecanicoPrincipal,
                             fechaHora = fechaHora
                         )
-                        onGuardar(pitStop) // ⬅️ Esto vuelve a activar el flujo: listado + status
+                        onGuardar(pitStop)
                     }
                 },
                 modifier = Modifier

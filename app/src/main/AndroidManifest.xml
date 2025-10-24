@@ -22,9 +22,7 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".ui.PitStopFormActivity"
-            android:exported="false" />
+
 
         <activity
             android:name=".ui.PitStopFormComposeActivity"
